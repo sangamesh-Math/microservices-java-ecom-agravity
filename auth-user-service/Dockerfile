@@ -5,4 +5,4 @@ COPY target/*.jar app.jar
 USER appuser
 EXPOSE 8081
 ENV SPRING_PROFILES_ACTIVE=prod
-ENTRYPOINT ["java", "-XX:+UseSerialGC", "-Xmx128m", "-Xms64m", "-XX:TieredStopAtLevel=1", "-jar", "app.jar"]
+ENTRYPOINT ["java", "-Djava.security.egd=file:/dev/./urandom", "-XX:+UseSerialGC", "-Xmx128m", "-Xms64m", "-XX:TieredStopAtLevel=1", "-jar", "app.jar"]

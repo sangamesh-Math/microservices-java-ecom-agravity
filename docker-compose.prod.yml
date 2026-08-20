@@ -125,7 +125,7 @@ services:
       SPRING_DATASOURCE_URL: jdbc:postgresql://postgres:5432/auth_user_db
       SPRING_DATASOURCE_USERNAME: ${POSTGRES_USER:-postgres}
       SPRING_DATASOURCE_PASSWORD: ${POSTGRES_PASSWORD:-postgres_prod_pass_2026}
-      JWT_SECRET: ${JWT_SECRET:-c2FuZ2FtZXNoLXN1cGVyLXNlY3JldC1qd3Qta2V5LWVjb21tZXJjZS0yMDI2LXByb2R1Y3Rpb24tZGVwbG95bWVudA==}
+      JWT_SECRET: ${JWT_SECRET:-MDEyMzQ1Njc4OWFiY2RlZjAxMjM0NTY3ODlhYmNkZWYwMTIzNDU2Nzg5YWJjZGVmMDEyMzQ1Njc4OWFiY2RlZg==}
     depends_on:
       postgres:
         condition: service_healthy
@@ -235,6 +235,7 @@ services:
       - "8080:8080"
     environment:
       SPRING_PROFILES_ACTIVE: prod
+      JWT_SECRET: ${JWT_SECRET:-MDEyMzQ1Njc4OWFiY2RlZjAxMjM0NTY3ODlhYmNkZWYwMTIzNDU2Nzg5YWJjZGVmMDEyMzQ1Njc4OWFiY2RlZg==}
       AUTH_SERVICE_URL: http://auth-user-service:8081
       CATALOG_SERVICE_URL: http://catalog-service:8082
       CART_SERVICE_URL: http://cart-service:8083
