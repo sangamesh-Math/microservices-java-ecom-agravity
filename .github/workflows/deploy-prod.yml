@@ -52,11 +52,11 @@ jobs:
             set -e
             echo "🚀 Starting deployment on AWS EC2..."
             
-            # Ensure JDK 17 is available on EC2
-            if ! command -v java &> /dev/null; then
-              echo "Installing OpenJDK 17 on EC2..."
+            # Ensure JDK 17 and Maven are available on EC2
+            if ! command -v mvn &> /dev/null; then
+              echo "Installing OpenJDK 17 and Maven on EC2..."
               sudo apt-get update -y
-              sudo apt-get install -y openjdk-17-jdk-headless
+              sudo apt-get install -y openjdk-17-jdk-headless maven
             fi
             
             APP_DIR="/home/ubuntu/app/microservices-java-ecom-agravity"
@@ -74,12 +74,9 @@ jobs:
               git reset --hard origin/prod
             fi
             
-            # Ensure mvnw has execute permissions
-            chmod +x ./mvnw
-            
             # Build jars on EC2 host
             echo "📦 Packaging Spring Boot microservices with Maven..."
-            ./mvnw clean package -DskipTests
+            mvn clean package -DskipTests
             
             # Deploy containers with Docker Compose
             echo "🐳 Starting Docker containers..."
