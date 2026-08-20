@@ -52,6 +52,13 @@ jobs:
             set -e
             echo "🚀 Starting deployment on AWS EC2..."
             
+            # Ensure JDK 17 is available on EC2
+            if ! command -v java &> /dev/null; then
+              echo "Installing OpenJDK 17 on EC2..."
+              sudo apt-get update -y
+              sudo apt-get install -y openjdk-17-jdk-headless
+            fi
+            
             APP_DIR="/home/ubuntu/app/microservices-java-ecom-agravity"
             
             # Clone repo if not present, otherwise pull latest prod branch
