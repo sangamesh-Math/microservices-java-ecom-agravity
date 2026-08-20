@@ -1,0 +1,66 @@
+spring:
+  cloud:
+    gateway:
+      globalcors:
+        cors-configurations:
+          '[/**]':
+            allowedOrigins: "*"
+            allowedMethods:
+              - GET
+              - POST
+              - PUT
+              - DELETE
+              - OPTIONS
+            allowedHeaders: "*"
+      routes:
+        # Auth Routes (Public)
+        - id: auth-service-public
+          uri: ${AUTH_SERVICE_URL:http://localhost:8081}
+          predicates:
+            - Path=/api/auth/**
+
+        # User Routes (Protected)
+        - id: user-service-protected
+          uri: ${AUTH_SERVICE_URL:http://localhost:8081}
+          predicates:
+            - Path=/api/users/**
+          filters:
+            - JwtAuthenticationFilter
+
+        # Catalog Service (Public GET requests)
+        - id: catalog-service-public
+          uri: ${CATALOG_SERVICE_URL:http://localhost:8082}
+          predicates:
+            - Path=/api/products/**
+            - Method=GET
+
+        # Catalog Service (Protected Mutations POST/PUT/DELETE)
+        - id: catalog-service-protected
+          uri: ${CATALOG_SERVICE_URL:http://localhost:8082}
+          predicates:
+            - Path=/api/products/**
+            - Method=POST,PUT,DELETE
+          filters:
+            - JwtAuthenticationFilter
+
+        # Cart Service (Protected)
+        - id: cart-service
+          uri: ${CART_SERVICE_URL:http://localhost:8083}
+          predicates:
+            - Path=/api/cart/**
+          filters:
+            - JwtAuthenticationFilter
+
+        # Order Service (Protected)
+        - id: order-service
+          uri: ${ORDER_SERVICE_URL:http://localhost:8084}
+          predicates:
+            - Path=/api/orders/**
+          filters:
+            - JwtAuthenticationFilter
+
+        # Notification Service (Internal/Monitoring/Promotions)
+        - id: notification-service
+          uri: ${NOTIFICATION_SERVICE_URL:http://localhost:8085}
+          predicates:
+            - Path=/api/notifications/**

@@ -1,0 +1,17 @@
+spring:
+  data:
+    redis:
+      host: ${AWS_ELASTICACHE_HOST}
+      port: ${AWS_ELASTICACHE_PORT:6379}
+      password: ${AWS_ELASTICACHE_PASSWORD:}
+      ssl:
+        enabled: ${REDIS_SSL_ENABLED:false}
+      timeout: 3000ms
+
+cart:
+  ttl-hours: 72
+
+logging:
+  level:
+    root: INFO
+    com.ecommerce: INFO

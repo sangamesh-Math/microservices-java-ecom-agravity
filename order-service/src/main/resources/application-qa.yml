@@ -1,0 +1,18 @@
+spring:
+  datasource:
+    url: ${SPRING_DATASOURCE_URL:jdbc:postgresql://qa-postgres.internal.vpc:5432/order_db}
+    username: ${SPRING_DATASOURCE_USERNAME:qa_user}
+    password: ${SPRING_DATASOURCE_PASSWORD:qa_password}
+    driver-class-name: org.postgresql.Driver
+  jpa:
+    hibernate:
+      ddl-auto: validate
+    show-sql: false
+  kafka:
+    bootstrap-servers: ${KAFKA_BOOTSTRAP_SERVERS:qa-kafka.internal.vpc:9092}
+
+services:
+  catalog:
+    url: ${CATALOG_SERVICE_URL:http://qa-catalog.internal.vpc:8082}
+  cart:
+    url: ${CART_SERVICE_URL:http://qa-cart.internal.vpc:8083}

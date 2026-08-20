@@ -1,0 +1,34 @@
+spring:
+  cloud:
+    gateway:
+      routes:
+        - id: auth-service-public
+          uri: ${AUTH_SERVICE_URL:http://qa-auth:8081}
+          predicates:
+            - Path=/api/auth/**
+        - id: user-service-protected
+          uri: ${AUTH_SERVICE_URL:http://qa-auth:8081}
+          predicates:
+            - Path=/api/users/**
+          filters:
+            - JwtAuthenticationFilter
+        - id: catalog-service
+          uri: ${CATALOG_SERVICE_URL:http://qa-catalog:8082}
+          predicates:
+            - Path=/api/products/**
+        - id: cart-service
+          uri: ${CART_SERVICE_URL:http://qa-cart:8083}
+          predicates:
+            - Path=/api/cart/**
+          filters:
+            - JwtAuthenticationFilter
+        - id: order-service
+          uri: ${ORDER_SERVICE_URL:http://qa-order:8084}
+          predicates:
+            - Path=/api/orders/**
+          filters:
+            - JwtAuthenticationFilter
+        - id: notification-service
+          uri: ${NOTIFICATION_SERVICE_URL:http://qa-notification:8085}
+          predicates:
+            - Path=/api/notifications/**

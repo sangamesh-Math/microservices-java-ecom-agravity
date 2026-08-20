@@ -1,0 +1,22 @@
+spring:
+  datasource:
+    url: ${SPRING_DATASOURCE_URL:jdbc:postgresql://dev-aurora-pg.internal.vpc:5432/order_db}
+    username: ${SPRING_DATASOURCE_USERNAME:dev_user}
+    password: ${SPRING_DATASOURCE_PASSWORD:dev_password}
+    driver-class-name: org.postgresql.Driver
+  jpa:
+    hibernate:
+      ddl-auto: update
+    show-sql: true
+  kafka:
+    bootstrap-servers: ${KAFKA_BOOTSTRAP_SERVERS:dev-kafka.internal.vpc:9092}
+
+services:
+  catalog:
+    url: ${CATALOG_SERVICE_URL:http://catalog-service.internal.vpc:8082}
+  cart:
+    url: ${CART_SERVICE_URL:http://cart-service.internal.vpc:8083}
+
+logging:
+  level:
+    com.ecommerce: DEBUG

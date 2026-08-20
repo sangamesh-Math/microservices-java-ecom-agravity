@@ -1,0 +1,49 @@
+spring:
+  cloud:
+    gateway:
+      globalcors:
+        cors-configurations:
+          '[/**]':
+            allowedOrigins: "http://dev.ecommerce.internal"
+            allowedMethods:
+              - GET
+              - POST
+              - PUT
+              - DELETE
+              - OPTIONS
+            allowedHeaders: "*"
+      routes:
+        - id: auth-service-public
+          uri: ${AUTH_SERVICE_URL:http://auth-user-service.internal.vpc:8081}
+          predicates:
+            - Path=/api/auth/**
+        - id: user-service-protected
+          uri: ${AUTH_SERVICE_URL:http://auth-user-service.internal.vpc:8081}
+          predicates:
+            - Path=/api/users/**
+          filters:
+            - JwtAuthenticationFilter
+        - id: catalog-service
+          uri: ${CATALOG_SERVICE_URL:http://catalog-service.internal.vpc:8082}
+          predicates:
+            - Path=/api/products/**
+        - id: cart-service
+          uri: ${CART_SERVICE_URL:http://cart-service.internal.vpc:8083}
+          predicates:
+            - Path=/api/cart/**
+          filters:
+            - JwtAuthenticationFilter
+        - id: order-service
+          uri: ${ORDER_SERVICE_URL:http://order-service.internal.vpc:8084}
+          predicates:
+            - Path=/api/orders/**
+          filters:
+            - JwtAuthenticationFilter
+        - id: notification-service
+          uri: ${NOTIFICATION_SERVICE_URL:http://notification-service.internal.vpc:8085}
+          predicates:
+            - Path=/api/notifications/**
+
+logging:
+  level:
+    com.ecommerce: DEBUG

@@ -1,0 +1,10 @@
+spring:
+  mail:
+    host: ${SPRING_MAIL_HOST:dev-mailpit.internal.vpc}
+    port: ${SPRING_MAIL_PORT:1025}
+  kafka:
+    bootstrap-servers: ${KAFKA_BOOTSTRAP_SERVERS:dev-kafka.internal.vpc:9092}
+
+logging:
+  level:
+    com.ecommerce: DEBUG

@@ -1,0 +1,85 @@
+name: Deploy Production to AWS EC2
+
+on:
+  push:
+    branches:
+      - prod
+  workflow_dispatch:
+
+jobs:
+  build-and-test:
+    name: Build & Verify Artifacts
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout Code
+        uses: actions/checkout@v4
+
+      - name: Set up JDK 17
+        uses: actions/setup-java@v4
+        with:
+          java-version: '17'
+          distribution: 'temurin'
+          cache: maven
+
+      - name: Build with Maven
+        run: ./mvnw clean package -DskipTests
+
+      - name: Verify Build Artifacts
+        run: |
+          ls -la gateway-service/target/*.jar
+          ls -la auth-user-service/target/*.jar
+          ls -la catalog-service/target/*.jar
+          ls -la cart-service/target/*.jar
+          ls -la order-service/target/*.jar
+          ls -la notification-service/target/*.jar
+
+  deploy-to-ec2:
+    name: Deploy to AWS EC2 Free Tier
+    needs: build-and-test
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: SSH and Deploy to EC2
+        uses: appleboy/ssh-action@v1.0.3
+        with:
+          host: ${{ secrets.EC2_HOST }}
+          username: ${{ secrets.EC2_USER || 'ubuntu' }}
+          key: ${{ secrets.EC2_SSH_KEY }}
+          port: 22
+          script_stop: true
+          script: |
+            set -e
+            echo "🚀 Starting deployment on AWS EC2..."
+            
+            APP_DIR="/home/ubuntu/app/microservices-java-ecom-agravity"
+            
+            # Clone repo if not present, otherwise pull latest prod branch
+            if [ ! -d "$APP_DIR" ]; then
+              echo "Cloning repository..."
+              git clone https://${{ secrets.GH_PAT }}@github.com/sangamesh-Math/microservices-java-ecom-agravity.git "$APP_DIR"
+              cd "$APP_DIR"
+              git checkout prod
+            else
+              echo "Pulling latest code on prod branch..."
+              cd "$APP_DIR"
+              git fetch origin prod
+              git reset --hard origin/prod
+            fi
+            
+            # Ensure mvnw has execute permissions
+            chmod +x ./mvnw
+            
+            # Build jars on EC2 host
+            echo "📦 Packaging Spring Boot microservices with Maven..."
+            ./mvnw clean package -DskipTests
+            
+            # Deploy containers with Docker Compose
+            echo "🐳 Starting Docker containers..."
+            docker compose -f docker-compose.prod.yml up -d --build --remove-orphans
+            
+            # Prune dangling images to save disk space
+            docker image prune -f
+            
+            echo "✅ Deployment successful! Active containers:"
+            docker ps --format "table {{.Names}}\t{{.Status}}\t{{.Ports}}"

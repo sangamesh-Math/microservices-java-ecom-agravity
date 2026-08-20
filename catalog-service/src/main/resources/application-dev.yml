@@ -1,0 +1,9 @@
+spring:
+  data:
+    mongodb:
+      uri: ${SPRING_DATA_MONGODB_URI:mongodb://dev-mongo.internal.vpc:27017/catalog_db}
+      auto-index-creation: true
+
+logging:
+  level:
+    com.ecommerce: DEBUG

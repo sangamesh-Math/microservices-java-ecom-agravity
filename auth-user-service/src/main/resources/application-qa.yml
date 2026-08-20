@@ -1,0 +1,15 @@
+spring:
+  datasource:
+    url: ${SPRING_DATASOURCE_URL:jdbc:postgresql://qa-postgres.internal.vpc:5432/auth_user_db}
+    username: ${SPRING_DATASOURCE_USERNAME:qa_user}
+    password: ${SPRING_DATASOURCE_PASSWORD:qa_password}
+    driver-class-name: org.postgresql.Driver
+  jpa:
+    hibernate:
+      ddl-auto: validate
+    show-sql: false
+
+jwt:
+  secret: ${JWT_SECRET:404E635266556A586E3272357538782F413F4428472B4B6250645367566B5970}
+  access-token-expiration-ms: 900000
+  refresh-token-expiration-ms: 604800000
